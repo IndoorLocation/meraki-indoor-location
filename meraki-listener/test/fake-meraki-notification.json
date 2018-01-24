@@ -1,0 +1,47 @@
+{
+  "version": "2.0",
+  "secret": "Mapwize",
+  "type": "DevicesSeen",
+  "data": {
+    "apMac": "00:18:0a:84:d9:18",
+    "apFloors": ["Euratech 2"],
+    "apTags": [],
+    "observations": [
+      {
+        "ipv4": "/192.168.128.24",
+        "location": {
+          "lat": 50.632641722291865,
+          "lng": 3.0201575247735946,
+          "unc": 0.07840796011259177,
+          "x": [30.304436349100875],
+          "y": [93.73503178713338]
+        },
+        "seenTime": "2018-01-24T12:56:49Z",
+        "ssid": "Mapwize",
+        "os": "Mac OS X",
+        "clientMac": "d4:61:9d:0c:f8:92",
+        "seenEpoch": 1516798609,
+        "rssi": 55,
+        "ipv6": null,
+        "manufacturer": "Apple"
+      }, {
+        "ipv4": "/192.168.128.19",
+        "location": {
+          "lat": 50.632641722291865,
+          "lng": 3.0201575247735946,
+          "unc": 3.878376078760063,
+          "x": [30.304436349100875],
+          "y": [93.73503178713338]
+        },
+        "seenTime": "2018-01-24T12:56:49Z",
+        "ssid": "Mapwize",
+        "os": "Debian-based Linux",
+        "clientMac": "40:b8:9a:a5:87:77",
+        "seenEpoch": 1516798609,
+        "rssi": 39,
+        "ipv6": null,
+        "manufacturer": "Hon Hai/Foxconn"
+      }
+    ]
+  }
+}
