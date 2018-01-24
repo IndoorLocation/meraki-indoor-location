@@ -1,0 +1,40 @@
+{
+  "name": "meraki-socket-indoor-location-emitter",
+  "version": "1.0.0",
+  "description": "Node.js server to provide indoorLocation from Cisco Meraki",
+  "engines": {
+    "npm": "3.10.10",
+    "node": "6.12.2"
+  },
+  "scripts": {
+    "start-listener": "node meraki-listener/app.js",
+    "start-emitter": "node meraki-emitter/app.js",
+    "start-configurator": "node meraki-configurator/meraki_to_venue.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IndoorLocation/meraki-socket-indoor-location-emitter.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IndoorLocation/meraki-socket-indoor-location-emitter/issues"
+  },
+  "homepage": "https://github.com/IndoorLocation/meraki-socket-indoor-location-emitter#readme",
+  "dependencies": {
+    "async": "2.5.0",
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
+    "ioredis": "3.1.4",
+    "lodash": "4.17.4",
+    "socket.io": "2.0.3",
+    "utf8": "2.1.2",
+    "mapwize-node-api": "0.1.63",
+    "chalk": "2.3.0",
+    "commander": "2.13.0",
+    "sphericalmercator": "1.0.5",
+    "request": "2.83.0",
+    "image-size": "0.6.2",
+    "xml2json": "0.11.0"
+  }
+}
