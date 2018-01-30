@@ -14,6 +14,43 @@ Node.js is required.
     ```
 
 
+## configurator
+
+A configurator tool is provided to create the configuration file required to finally run the Meraki listener.
+The configuration file contains the necessary informations to project the coordinates received from Meraki onto the Mapwize map.
+
+The configurator is split in 3 steps described below.
+
+### Extract data from Meraki
+
+TO BE WRITTEN
+
+### Upload Meraki data into Mapwize
+
+We first upload the Meraki floor plans and beacons into a Mapwize venue.
+This step creates all required layers with a name that starts with `Meraki - ` in Mapwize.
+All these layers do not have floor configured, you will then need to manually edit each layer for updating their floor properties.
+As some alignment problems can be observed, you will also have to check that each layer image perfectly overlays the Mapwize layers for a better accuracy.
+Once everything is correctly aligned, you will have to launch again the script with the `--update` parameter to automatically update the floor of each beacon.
+
+*   Upload
+    ```
+    ./meraki-configurator/uploadToMapwize.js --merakiFloorPlansConfig [FILEPATH_FOR_FLOORPLANS_JSON] --merakiBeaconsConfig [FILEPATH_FOR_BEACONS_XML] --mapwizeUser [YOUR_MAPWIZE_EMAIL] --mapwizePwd [YOUR_MAPWIZE_PWD] --mapwizeApiKey [YOUR_MAPWIZE_API_KEY] --mapwizeOrganizationId [YOUR_MAPWIZE_ORGANIZATIONID] --mapwizeVenueId [YOUR_MAPWIZE_VENUEID]
+    ```
+*   Update
+    ```
+    ./meraki-configurator/uploadToMapwize.js --merakiFloorPlansConfig [FILEPATH_FOR_FLOORPLANS_JSON] --merakiBeaconsConfig [FILEPATH_FOR_BEACONS_XML] --mapwizeUser [YOUR_MAPWIZE_EMAIL] --mapwizePwd [YOUR_MAPWIZE_PWD] --mapwizeApiKey [YOUR_MAPWIZE_API_KEY] --mapwizeOrganizationId [YOUR_MAPWIZE_ORGANIZATIONID] --mapwizeVenueId [YOUR_MAPWIZE_VENUEID] --update
+    ```
+
+### Generate the configuration file
+
+Once everything is correctly imported, updated (floors) and aligned in the Mapwize venue, use the command below to generate the JSON configuration file that will be used later by the listener.
+
+```
+./meraki-configurator/configureFromMapwize --merakiFloorPlansConfig [FILEPATH_FOR_FLOORPLANS_JSON] --mapwizeUser [YOUR_MAPWIZE_EMAIL] --mapwizePwd [YOUR_MAPWIZE_PWD] --mapwizeApiKey [YOUR_MAPWIZE_API_KEY] --mapwizeOrganizationId [YOUR_MAPWIZE_ORGANIZATIONID] --mapwizeVenueId [YOUR_MAPWIZE_VENUEID] --output [OUTPUT_PATH_FOR_LISTENER_CONFIGURATION]
+```
+
+
 ## meraki-listener
 
 NodeJS server to react on Meraki notifications.

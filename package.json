@@ -9,7 +9,9 @@
   "scripts": {
     "start-listener": "node meraki-listener/app.js",
     "start-emitter": "node meraki-emitter/app.js",
-    "start-configurator": "node meraki-configurator/meraki_to_venue.js"
+    "start-configurator-extract": "node meraki-configurator/extractFromMeraki.js",
+    "start-configurator-upload": "node meraki-configurator/uploadToMapwize.js",
+    "start-configurator-configure": "node meraki-configurator/configureFromMapwize.js"
   },
   "repository": {
     "type": "git",

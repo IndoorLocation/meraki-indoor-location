@@ -91,6 +91,8 @@ typings/
 # End of https://www.gitignore.io/api/node,macos
 
 /credentials.txt
+/meraki-configurator/*.json
+/meraki-configurator/*.xml
 /meraki-listener/*.json
 
 #WebStorm
