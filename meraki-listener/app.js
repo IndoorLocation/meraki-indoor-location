@@ -11,6 +11,6 @@ if (!config.redis.host) {
     throw 'Missing required parameter: REDIS_HOST';
 }
 
-mapwize.parseFloors();
+mapwize.parseFloorPlans();
 
 require('./config/express')();

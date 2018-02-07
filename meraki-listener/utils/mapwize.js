@@ -79,21 +79,21 @@ function projectWithScale(scale, xyCorners) {
 };
 
 /**
- * Internal method used to parse and to process the needed information of a given floor
- * @param floor to parse
+ * Internal method used to parse and to process the needed information of a given floorPlan
+ * @param floorPlan to parse
  */
-function ParseFloor(floor) {
-    var merakiLatLngCorners = _.get(floor, 'merakiCorners');
-    var mapwizeLatLngCorners = _.get(floor, 'mapwizeCorners');
-    var floorPlanName = _.get(floor, 'name');
+function ParseFloorPlan(floorPlan) {
+    var merakiLatLngCorners = _.get(floorPlan, 'merakiCorners');
+    var mapwizeLatLngCorners = _.get(floorPlan, 'mapwizeCorners');
+    var floorPlanName = _.get(floorPlan, 'name');
 
     if (merakiLatLngCorners && mapwizeLatLngCorners && floorPlanName) {
-        floorPlansByName[floorPlanName] = {
-            floor: floor,
-            merakiXYCorners: getXYCorners(merakiLatLngCorners),
-            mapwizeXYCorners: getXYCorners(mapwizeLatLngCorners)
-        };
-    } else {
+        floorPlan.mapwizeXYCorners = getXYCorners(mapwizeLatLngCorners);
+        floorPlan.merakiXYCorners =  getXYCorners(merakiLatLngCorners);
+
+        floorPlansByName[floorPlanName] = floorPlan;
+    }
+    else {
         console.log('Floor not correctly defined. Please check your configuration.');
     }
 };
@@ -101,10 +101,10 @@ function ParseFloor(floor) {
 /**
  * Public method used to parse and to process all layers written inside a JSON file
  */
-function parseFloors() {
-    _.forEach(config.floorPlans, ParseFloor);
+function parseFloorPlans() {
+    _.forEach(config.floorPlans, ParseFloorPlan);
 };
-exports.parseFloors = parseFloors;
+exports.parseFloorPlans = parseFloorPlans;
 
 /**
  * Process a given Meraki observation and compute the corresponding indoorLocation object
@@ -117,12 +117,12 @@ function getIndoorLocation(merakiObservation) {
 
     if (floorPlan) {
         var scale = getScale(merakiObservation.location, floorPlan.merakiXYCorners);
-        var coordinate = projectWithScale(scale, floorPlan.mapwizeCorners);
+        var coordinate = projectWithScale(scale, floorPlan.mapwizeXYCorners);
 
         // Create the object that will be saved in redis
         indoorLocation = {
             latitude: coordinate.lat,
-            longitude: coorinate.lng,
+            longitude: coordinate.lng,
             floor: floorPlan.floor,
             accuracy: _.get(merakiObservation, 'location.unc'),
             timestamp: _.get(merakiObservation, 'seenEpoch', Date.now())
