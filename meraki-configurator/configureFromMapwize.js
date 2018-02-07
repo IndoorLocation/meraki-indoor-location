@@ -84,7 +84,7 @@ async.series([
                 var floor = {
                     name: name,
                     floor: mapwizeLayer.floor,
-                    merakiCorners: mapwizeLayer.data.corners,
+                    merakiCorners: mapwizeLayer.data.cornersInMeraki,
                     mapwizeCorners: mapwizeLayer.importJob.corners
                 };
                 floors.push(floor);
