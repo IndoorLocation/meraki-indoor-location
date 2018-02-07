@@ -38,7 +38,7 @@ var MapwizeClient = new MapwizeAPI(program.mapwizeApiKey, program.mapwizeOrganiz
 //Meraki floorplans JSON
 var merakiFloorplansByName;
 //Layer universes
-var layersUniverses = program.mapwizeUniverseId ? [program.mapwizeUniverseId] : null;
+var layersUniverses = program.mapwizeUniverseId ? [program.mapwizeUniverseId] : [];
 //Mapwize layers
 var layersFromAPIByName;
 
@@ -135,7 +135,7 @@ async.series([
             }
         })
     },
-    //Reset Meraki layers or recovery mapwize layers
+    //Reset Meraki layers or retrieve mapwize layers
     function (next) {
         layersFromAPIByName = {};
         MapwizeClient.getVenueLayers(program.mapwizeVenueId, function (err, layers) {
@@ -148,7 +148,7 @@ async.series([
                     MapwizeClient.deleteLayer(layer._id, cb);
                 }, next)
             } else {
-                console.log(chalk.blue('- Recovery all venue layers'))
+                console.log(chalk.blue('- Retrieve all venue layers'))
                 layersFromAPIByName = _.keyBy(layers, 'name');
                 next();
             }
