@@ -10,7 +10,7 @@
     "start-listener": "node meraki-listener/app.js",
     "start-emitter": "node meraki-emitter/app.js",
     "start-configurator-extract": "node meraki-configurator/extractFromMeraki.js",
-    "start-configurator-upload": "node meraki-configurator/uploadToMapwize.js",
+    "start-configurator-upload": "node meraki-configurator/merakiFloorplansToMapwize.js",
     "start-configurator-configure": "node meraki-configurator/configureFromMapwize.js"
   },
   "repository": {
@@ -36,7 +36,6 @@
     "commander": "2.13.0",
     "sphericalmercator": "1.0.5",
     "request": "2.83.0",
-    "image-size": "0.6.2",
-    "xml2json": "0.11.0"
+    "image-size": "0.6.2"
   }
 }
