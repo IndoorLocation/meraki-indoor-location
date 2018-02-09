@@ -7,7 +7,7 @@ var MapwizeAPI = require('mapwize-node-api');
 var chalk = require('chalk');
 var program = require('commander');
 var xml = require('xml2json');
-
+var coordinate = require('./coordinate');
 program
     .version('0.1.0')
     .description('Upload Meraki access points into Mapwize')
@@ -45,12 +45,18 @@ function createLayerBeacons(layer, accessPoints, callback) {
     async.each(accessPoints, function (nodeIds, cb) {
         var accessPoint = accessPointsByNodeIds[nodeIds];
         if (accessPoint) {
+            var xyMerakiCorners = coordinate.lngLatCornersToXYCorners(layer.data.cornersInMeraki);
+            var xyMapwizeLayerCorner = coordinate.lngLatCornersToXYCorners(layer.importJob.corners);
+            var accessPointCord = {lng : parseFloat(accessPoint.lng), lat : parseFloat(accessPoint.lat)};
+            var scale = coordinate.getScale(accessPointCord, xyMerakiCorners);
+            var projectAccessPoint = coordinate.projectWithScale(scale, xyMapwizeLayerCorner);
+            //console.log(scale)
             var beacon = {
                 'name' : "AP - " + accessPoint.name,
                 'owner' : program.mapwizeOrganizationId,
                 'venueId' : program.mapwizeVenueId,
                 'type' : 'wifi',
-                'location' : {lon : parseFloat(accessPoint.lng), lat : parseFloat(accessPoint.lat)},
+                'location' : {lon : projectAccessPoint.lng, lat : projectAccessPoint.lat},
                 'floor' : layer.floor,
                 'isPublished' : true,
                 'properties' : { mac : accessPoint.mac},

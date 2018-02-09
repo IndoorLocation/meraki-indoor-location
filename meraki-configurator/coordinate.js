@@ -79,3 +79,68 @@ exports.getImageCoordinateForCorners = function (lngLat, corners, w, h){
     var y = length(a)*Math.sin(angleBetween(a, top))*w/length(top);
     return [x, h - y];
 }
+
+exports.lngLatCornersToXYCorners = function (corners) {
+    var xyCorners = [];
+    corners.forEach(function (corner) {
+        var xy = merc.forward([corner.lng, corner.lat])
+        xyCorners.push({
+            x : xy[0],
+            y : xy[1]
+        })
+    });
+    return xyCorners;
+}
+
+/**
+ * Compute the scale for a lat/lng coordinate with corners in x/y.
+ * @param coordinate lat/lng position
+ * @param xyCorners x/y corners
+ */
+exports.getScale = function (coordinate, xyCorners) {
+    var xy = merc.forward([coordinate.lng, coordinate.lat]);
+
+    var topLeft = xyCorners[0];
+    var bottomRight = xyCorners[3];
+    var bottomLeft = xyCorners[2];
+
+    var width = bottomRight.x - bottomLeft.x;
+    var height = topLeft.y - bottomLeft.y;
+
+    var x = xy[0] - bottomLeft.x;
+    var y = xy[1] - bottomLeft.y;
+
+    var scale = {
+        width: x / width,
+        height: y / height
+    };
+
+    return scale;
+};
+
+/**
+ * Project the scale to xyCorners.
+ * @param scale ratio to project
+ * @param xyCorners base to project
+ */
+exports.projectWithScale = function (scale, xyCorners) {
+    var topLeft = xyCorners[0];
+    var bottomRight = xyCorners[3];
+    var bottomLeft = xyCorners[2];
+
+    var hVect = {
+        x: (bottomRight.x - bottomLeft.x) * scale.width,
+        y: (bottomRight.y - bottomLeft.y) * scale.width
+    };
+
+    var vVect = {
+        x: (topLeft.x - bottomLeft.x) * scale.height,
+        y: (topLeft.y - bottomLeft.y) * scale.height
+    };
+
+    var x = bottomLeft.x + hVect.x + vVect.x;
+    var y = bottomLeft.y + hVect.y + vVect.y;
+    var lngLat = merc.inverse([x, y]);
+
+    return {lng: lngLat[0], lat: lngLat[1]};
+};
