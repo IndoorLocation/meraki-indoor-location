@@ -19,7 +19,6 @@ program
     .option('--mapwizeApiKey [key]', 'Mapwize api key')
     .option('--mapwizeOrganizationId [organizationId]', 'Mapwize organizationId')
     .option('--mapwizeVenueId [venueId]', 'Mapwize venueId')
-    .option('--update', 'Update access points floor')
     .parse(process.argv)
 
 if (!program.merakiFloorPlansConfig || !program.merakiAccessPointsConfig || !program.mapwizeUser || !program.mapwizePwd || !program.mapwizeApiKey || !program.mapwizeOrganizationId || !program.mapwizeVenueId) {
