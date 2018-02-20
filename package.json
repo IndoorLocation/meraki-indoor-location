@@ -31,7 +31,7 @@
     "lodash": "4.17.4",
     "socket.io": "2.0.3",
     "utf8": "2.1.2",
-    "mapwize-node-api": "0.1.63",
+    "mapwize-node-api": "https://github.com/Mapwize/mapwize-node-api",
     "chalk": "2.3.0",
     "commander": "2.13.0",
     "sphericalmercator": "1.0.5",
