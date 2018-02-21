@@ -115,7 +115,7 @@ function getIndoorLocation(merakiObservation) {
     var floorPlan = floorPlansByName[apFloor];
     var indoorLocation = {};
 
-    if (floorPlan) {
+    if (floorPlan && merakiObservation.location) {
         var scale = getScale(merakiObservation.location, floorPlan.merakiXYCorners);
         var coordinate = projectWithScale(scale, floorPlan.mapwizeXYCorners);
 

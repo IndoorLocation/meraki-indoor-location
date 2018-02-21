@@ -45,7 +45,13 @@ exports.processMerakiNotifications = function (req, res) {
 
         res.status(200).end();
     }
+    else if (config.secret && config.secret !== body.secret) {
+        res.status(403).send({ statusCode: 403, error: 'Forbidden', message: 'Wrong secret, access forbidden' });
+    }
+    else if (body.type !== 'DevicesSeen') {
+        res.status(400).send({ statusCode: 400, error: 'Bad Request', message: 'Wrong notification type' });
+    }
     else {
-        res.status(403).send({ statusCode: 403, error: 'Forbidden', message: 'Wrong secret, access forbidden' })
+        res.status(400).send({ statusCode: 400, error: 'Bad Request', message: 'Unknown error' });
     }
 };
