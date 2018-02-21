@@ -34,9 +34,15 @@ exports.processMerakiNotifications = function (req, res) {
 
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
 
-            // Store the indoorLocation into a Redis cache if an indoorLocation exists, and the extracted ip is a correct IPV4 address
-            if (!_.isEmpty(indoorLocation) && net.isIP(ip) === 4) {
-                redis.setObject(ip, indoorLocation, config.redis.merakiNotificationTTL);
+            // Store the indoorLocation into a Redis cache if an indoorLocation exists, and if the extracted ip and/or macAddress are valid
+            if (!_.isEmpty(indoorLocation)) {
+                if (net.isIP(ip) === 4) {
+                    redis.setObject(ip, indoorLocation, config.redis.merakiNotificationTTL);
+                }
+
+                if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
+                    redis.setObject(observation.clientMac, indoorLocation, config.redis.merakiNotificationTTL);
+                }
             }
 
             // Do whatever you want with the observations received here
