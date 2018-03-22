@@ -154,19 +154,28 @@ To do so, redis notifications have to be enabled with the command described belo
 redis-cli config set notify-keyspace-events K$
 ```
 
+The Microsoft Azure platform also allows to change this parameter in the "Advanced settings" menu item.
+
 ### Use
 
 *   We first need to correctly set the configuration parameters
     *   Directly in the `config/all.js` file
     *   Via environment variables
-        *   PORT: port used by the server
+        *   PORT: port used by the server (_default: 3004_)
         *   SECRET: secret defined in the Meraki dashboard to authenticate the POST query (__required__)
         *   VALIDATOR: token defined by Meraki to identify the source (__required__)
+        *   MAX_BODY_SIZE: Controls the maximum request body size (_default: '50mb'_)
         *   FLOOR_PLANS: serialized JSON with the output of the configurator (__required__)
+        *   MAC_ADDRESS_ENABLED: use the MAC address in addition to the IP address as a key in Redis (_default: false_)
         *   REDIS_HOST: redis host (__required__)
-        *   REDIS_PORT: redis port
+        *   REDIS_PORT: redis port (_default: 6379_)
         *   REDIS_AUTH: redis password (__required__ if set)
-        *   REDIS_MERAKI_NOTIF_TTL: redis key TTL
+        *   REDIS_MERAKI_NOTIF_TTL: redis key TTL in seconds (_default: 3600_)
+        *   DOCUMENT_DB_ENABLED: allow to log the indoorLocation along to the Meraki observation into a DocumentDB collection
+        *   DOCUMENT_DB_ENDPOINT: string connexion to the DocumentDB instance
+        *   DOCUMENT_DB_PRIMARY_KEY: primary access key to the DocumentDB instance 
+        *   DOCUMENT_DB_DATABASE: DocumentDB database name
+        *   DOCUMENT_DB_COLLECTION: DocumentDB collection name
 *   Start the server
     ```
     npm run start-listener
