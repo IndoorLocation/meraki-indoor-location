@@ -26,16 +26,18 @@
   "dependencies": {
     "async": "2.5.0",
     "body-parser": "1.18.2",
-    "express": "4.16.2",
-    "ioredis": "3.1.4",
-    "lodash": "4.17.4",
-    "socket.io": "2.0.3",
-    "utf8": "2.1.2",
-    "mapwize-node-api": "https://github.com/Mapwize/mapwize-node-api",
     "chalk": "2.3.0",
     "commander": "2.13.0",
-    "sphericalmercator": "1.0.5",
+    "documentdb": "1.14.2",
+    "express": "4.16.2",
+    "flat": "4.0.0",
+    "image-size": "0.6.2",
+    "ioredis": "3.1.4",
+    "lodash": "4.17.4",
+    "mapwize-node-api": "https://github.com/Mapwize/mapwize-node-api",
     "request": "2.83.0",
-    "image-size": "0.6.2"
+    "socket.io": "2.0.3",
+    "sphericalmercator": "1.0.5",
+    "utf8": "2.1.2"
   }
 }

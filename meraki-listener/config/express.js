@@ -11,7 +11,7 @@ module.exports = function () {
     var server = require('http').Server(app);
 
     // Express configuration
-    app.use(bodyParser.json({limit: '50mb'}));
+    app.use(bodyParser.json({limit: config.maxBodySize}));
 
     app.options('*', function(req, res) {
         var origin = req.get('origin');

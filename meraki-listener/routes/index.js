@@ -1,9 +1,11 @@
 'use strict';
 
 var _ = require('lodash');
+var flatten = require('flat');
 var net = require('net');
 
 var config = require('../config/config');
+var documentDB = require('../utils/documentdb');
 var mapwize = require('../utils/mapwize');
 var redis = require('../utils/redis');
 var utils = require('../utils/index');
@@ -46,7 +48,15 @@ exports.processMerakiNotifications = function (req, res) {
             }
 
             // Do whatever you want with the observations received here
-
+            // As an example, we log the indoorLocation along with the Meraki observation
+            // into a DocumentDB collection if enabled
+            // All object properties are flatten to ease any further analysis
+            if (config.documentDB.enabled.toString() === 'true') {
+                documentDB.insertDocument(flatten({
+                    indoorLocation: indoorLocation,
+                    merakiObservation: globalObservation
+                }));
+            }
         });
 
         res.status(200).end();
