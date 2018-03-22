@@ -215,6 +215,18 @@ These objects will be sent to the providers via a socket channel.
     ```
 * Add the socketIndoorLocationProvider in your app and point the module to your emitter server URL.
 
+### Turnkey project
+
+Thanks to [Docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/), a compose file is available to start and configure all required services (redis, listener, emitter).
+Selected environment variables can be edited through the environment file `compose/.env`.
+
+The services can be started as follows:
+```
+docker-compose -f compose/docker-compose.yml build
+docker-compose -f compose/docker-compose.yml up -d --force-recreate
+```
+
+Once executed, the services are available on ports described above.
 
 ## Contribute
 
