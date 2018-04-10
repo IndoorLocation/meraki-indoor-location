@@ -37,15 +37,18 @@ function getScale(coordinate, xyCorners) {
     var bottomRight = xyCorners[3];
     var bottomLeft = xyCorners[2];
 
-    var width = bottomRight.x - bottomLeft.x;
-    var height = topLeft.y - bottomLeft.y;
+    var xBLC = xy[0]-bottomLeft.x;
+    var yBLC = xy[1]-bottomLeft.y;
 
-    var x = xy[0] - bottomLeft.x;
-    var y = xy[1] - bottomLeft.y;
+    var xBLBR = bottomRight.x - bottomLeft.x;
+    var yBLBR = bottomRight.y - bottomLeft.y;
+
+    var xBLTL = topLeft.x - bottomLeft.x;
+    var yBLTL = topLeft.y - bottomLeft.y;
 
     var scale = {
-        width: x / width,
-        height: y / height
+        width: (xBLBR*xBLC + yBLBR*yBLC)/(xBLBR*xBLBR + yBLBR*yBLBR),
+        height: (xBLTL*xBLC + yBLTL*yBLC)/(xBLTL*xBLTL + yBLTL*yBLTL)
     };
 
     return scale;

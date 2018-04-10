@@ -58,28 +58,31 @@ function createLayer(floorplan, name, callback) {
         console.log(chalk.green('\t\tDownload the Meraki floor plan image.'));
         request({url : floorplan.image_url.split('?')[0], encoding : null }, function (err, res) {
             var size = imageSize(res.body);
+            var rotationAngleRad = floorplan.rotation_angle / 180 * Math.PI;
             var georeference = {
                 points: [
                     {
-                        x: 0,
-                        y: 0,
+                        x: size.width/2 - size.width/2*Math.cos(-rotationAngleRad) - size.height/2*Math.sin(-rotationAngleRad),
+                        y: size.height/2 - size.height/2*Math.cos(-rotationAngleRad) + size.width/2*Math.sin(-rotationAngleRad),
                         longitude: floorplan.sw_lng,
                         latitude: floorplan.sw_lat,
                     },
                     {
-                        x: size.width,
-                        y: size.height,
+                        x: size.width/2 + size.width/2*Math.cos(-rotationAngleRad) + size.height/2*Math.sin(-rotationAngleRad),
+                        y: size.height/2 + size.height/2*Math.cos(-rotationAngleRad) - size.width/2*Math.sin(-rotationAngleRad),
                         longitude: floorplan.ne_lng,
                         latitude: floorplan.ne_lat,
                     }
                 ]
             }
             var TLProject = coordinate.projectPointForGeoreference([0, size.height], georeference);
+            var TRProject = coordinate.projectPointForGeoreference([size.width, size.height], georeference);
+            var BLProject = coordinate.projectPointForGeoreference([0, 0], georeference);
             var BRProject = coordinate.projectPointForGeoreference([size.width, 0], georeference);
             var topLeft = {latitude: TLProject[0], longitude: TLProject[1]};
+            var topRight = {latitude: TRProject[0], longitude: TRProject[1]};
+            var bottomLeft = {latitude: BLProject[0], longitude: BLProject[1]};
             var bottomRight = {latitude: BRProject[0], longitude: BRProject[1]};
-            var topRight = {latitude: floorplan.ne_lat, longitude: floorplan.ne_lng};
-            var bottomLeft = {latitude: floorplan.sw_lat, longitude: floorplan.sw_lng};
 
             layer.data = {cornersInMeraki: [{lat: topLeft.latitude, lng: topLeft.longitude}, {lat: topRight.latitude, lng: topRight.longitude}, {lat: bottomLeft.latitude, lng: bottomLeft.longitude}, {lat: bottomRight.latitude, lng: bottomRight.longitude}]};
 
