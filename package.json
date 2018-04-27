@@ -1,5 +1,5 @@
 {
-  "name": "meraki-socket-indoor-location-emitter",
+  "name": "meraki-indoor-location",
   "version": "1.0.0",
   "description": "Node.js server to provide indoorLocation from Cisco Meraki",
   "engines": {
@@ -24,20 +24,20 @@
   },
   "homepage": "https://github.com/IndoorLocation/meraki-socket-indoor-location-emitter#readme",
   "dependencies": {
-    "async": "2.5.0",
+    "async": "2.6.0",
     "body-parser": "1.18.2",
-    "chalk": "2.3.0",
-    "commander": "2.13.0",
+    "chalk": "2.4.1",
+    "commander": "2.15.1",
     "documentdb": "1.14.2",
-    "express": "4.16.2",
+    "express": "4.16.3",
     "flat": "4.0.0",
     "image-size": "0.6.2",
-    "ioredis": "3.1.4",
-    "lodash": "4.17.4",
+    "ioredis": "3.2.2",
+    "lodash": "4.17.10",
     "mapwize-node-api": "https://github.com/Mapwize/mapwize-node-api",
-    "request": "2.83.0",
+    "request": "2.85.0",
     "socket.io": "2.0.3",
     "sphericalmercator": "1.0.5",
-    "utf8": "2.1.2"
+    "utf8": "3.0.0"
   }
 }
