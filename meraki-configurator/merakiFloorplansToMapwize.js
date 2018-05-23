@@ -133,7 +133,7 @@ async.series([
             }
             else {
                 var json = JSON.parse(data);
-                merakiFloorplansByName = _.keyBy(json.floorplans, 'name');
+                merakiFloorplansByName = _.keyBy(json, 'name');
                 next();
             }
         })

@@ -100,7 +100,7 @@ async.series([
             } else {
                 var configFileToJson = JSON.parse(data);
                 merakiAccessPointsByFloorPlanName = {};
-                _.forEach(configFileToJson.floorplans, function (floorPlan) {
+                _.forEach(configFileToJson, function (floorPlan) {
                     _.set(merakiAccessPointsByFloorPlanName, floorPlan.name, floorPlan.node_ids.split(','));
                 })
                 next();

@@ -91,10 +91,9 @@ Here is the description of how to get the required data from Meraki.
 #### Getting the floor plans
 
 - Log in to your Meraki dashboard
+- Open the Developer Console to log all requests
 - In the Wireless menu, navigate to `Map & floor plan`
-- Display the source of the HTML page in your browser
-- Search the source for `MKI.Current.get('ng').set(`. You should find it twice. The one we need is the first one, around line 473, just after `if (window.google_maps_loaded) {`
-- Copy-paste the JSON that is inside `MKI.Current.get('ng').set( **JSON** );` to a text file and save it on disk.
+- Go the the Network tab in the developer console, find the `floorplans` API request (`/floorplans`) and save the JSON into a file
 
 #### Getting the list of access points
 
