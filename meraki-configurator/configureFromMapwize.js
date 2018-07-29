@@ -69,7 +69,7 @@ async.series([
             }
             else {
                 var json = JSON.parse(data);
-                merakiFloorPlansByName = _.keyBy(json.floorplans, 'name');
+                merakiFloorPlansByName = _.keyBy(json, 'name');
                 next();
             }
         });
