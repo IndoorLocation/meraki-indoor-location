@@ -15,7 +15,7 @@ var ipExtractor = /^\/?(.+)/;
 /**
  * Default route
  */
-exports.default = function (req, res) {
+exports.validator = function (req, res) {
     res.status(200).send(config.validator);
 };
 

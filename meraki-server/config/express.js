@@ -1,17 +1,22 @@
-
 'use strict';
 
-var routes = require('../routes');
-var socket = require('../routes/socket');
+var bodyParser = require('body-parser');
+
 var utils = require('../utils');
-var config = require('../config/config');
+var config = require('./config');
+
+var socket = require('../routes/socket');
+
+var defaultRoutes = require('../routes');
+var postRoutes = require('../routes/post');
 
 module.exports = function () {
-
     var app = require('express')();
-
     var server = require('http').Server(app);
     var io = require('socket.io')(server);
+
+    // Express configuration
+    app.use(bodyParser.json({limit: config.maxBodySize}));
 
     app.options('*', function(req, res) {
         var origin = req.get('origin');
@@ -42,11 +47,13 @@ module.exports = function () {
     // Initialize utils before all
     utils.init(io);
 
-    // redirect all others to the index
-    app.all('*', routes.default);
-
     // Socket.io Communication
     io.on('connection', socket);
+
+    // Application routes
+    app.get('/post', postRoutes.validator);
+    app.post('/post', postRoutes.processMerakiNotifications);
+    app.all('*', defaultRoutes.default);
 
     // Start server
     server.listen(config.port, function () {
