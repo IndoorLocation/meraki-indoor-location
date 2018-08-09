@@ -214,18 +214,15 @@ These objects will be sent to the providers via a socket channel.
     ```
 * Add the socketIndoorLocationProvider in your app and point the module to your emitter server URL.
 
-### Turnkey project
+### Packaging
 
-Thanks to [Docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/), a compose file is available to start and configure all required services (redis, listener, emitter).
-Selected environment variables can be edited through the environment file `compose/.env`.
-
-The services can be started as follows:
+A Docker image has been made available to ease the deployment.
+The image can be locally built as follows:
 ```
-docker-compose -f compose/docker-compose.yml build
-docker-compose -f compose/docker-compose.yml up -d --force-recreate
+docker build -t meraki-indoor-location:latest -f docker/Dockerfile .
 ```
-
-Once executed, the services are available on ports described above.
+Once built, you can start the server with: `docker run --rm -it -p 3004:3004 meraki-indoor-location:latest start`.
+All environment variables can be passed to the container via the `--env` parameter during the container creation.
 
 ## Contribute
 

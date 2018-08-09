@@ -8,6 +8,7 @@ var config = require('../config/config');
 var documentDB = require('../utils/documentdb');
 var mapwize = require('../utils/mapwize');
 var cache = require('../cache');
+var utils = require('../utils');
 
 var ipExtractor = /^\/?(.+)/;
 
@@ -28,11 +29,13 @@ exports.processMerakiNotifications = function (req, res) {
 
     // Check secret sent by Meraki (if set)
     if ((!config.secret || config.secret === body.secret) && body.type === 'DevicesSeen') {
-        console.log('' + req.body.data.observations.length + ' devices seen from AP ' + req.body.data.apMac);
+        utils.log('' + req.body.data.observations.length + ' devices seen from AP ' + req.body.data.apMac);
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
             var ip = _.get(observation, 'ipv4') || 'null';
             ip = ip.match(ipExtractor)[1];
+
+            // utils.log('Device detected. MAC: ' + observation.clientMac + ', IP: ' + (ip === 'null' ? 'Unknown' : ip + '.'));
 
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
 
