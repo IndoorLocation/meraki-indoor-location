@@ -32,10 +32,10 @@ On iOS and Android, it is impossible for an app to retrieve the MAC address of t
 The procedure works as such:
 
 - The location of the device is computed by the Meraki cloud
-- Those locations are sent as notifications to a listener server (see below)
-- The listener decodes the location and stores it in a Redis database using the local IP as key. It can also send it to any other system or database for further processing.
-- The device connects, thans to web sockets, to an emitter server and provides its local IP as userId.
-- The emitter server listens for changes in the Redis database and sends the right location to the right user matching the local IP
+- Those locations are sent as notifications to the IndoorLocation server (see below)
+- The server decodes the location and stores it in a cache (Redis or in-memory) using the local IP or MAC as key. It can also send it to any other system or database for further processing.
+- The device connects, thanks to web sockets, to the IndoorLocation server and provides its local IP as userId.
+- The server listens for changes in the cache and sends the right location to the right user matching the local IP
 
 ### Floor and aligment
 
@@ -53,7 +53,7 @@ A correction phase is then required and works like this:
 
 ### App SDK
 
-The configurator, listener and emitter provided in this repository are running on the server side.
+The configurator and the server provided in this repository are running on the server side.
 
 If you want to get the user's position in your app, and for example display it on the map, you will need to use the SocketIndoorLocationProvider modules which are available for both [iOS](https://github.com/IndoorLocation/socket-indoor-location-provider-ios) and [Android](https://github.com/IndoorLocation/socket-indoor-location-provider-android)
 
@@ -65,7 +65,7 @@ If you want to get the user's position in your app, and for example display it o
 All Meraki access points can be configured to emit a iBeacon bluetooth signal. Those signals can be heard by the mobile phones and used to compute the device's location. See [the Bluetooth Beaconing section in the Meraki documentation
 ](https://documentation.meraki.com/MR/Bluetooth/Bluetooth_Low_Energy_(BLE))
 
-In order to do so, an iBeacon SDK needs to be included in your app. This framework proposes a BasicBeaconIndoorLocationProvider available for both [iOS](https://github.com/IndoorLocation/basic-beacon-indoor-location-provider-ios) and [Android](https://github.com/IndoorLocation/basic-beacon-indoor-location-provider-android). Other providers exists with more comprehensive features.
+In order to do so, an iBeacon SDK needs to be included in your app. IndoorLocation proposes a BasicBeaconIndoorLocationProvider available for both [iOS](https://github.com/IndoorLocation/basic-beacon-indoor-location-provider-ios) and [Android](https://github.com/IndoorLocation/basic-beacon-indoor-location-provider-android). Other providers exists with more comprehensive features.
 
 In order to use the BasicBeaconIndoorLocationProvider, the steps are the following:
 
@@ -123,7 +123,7 @@ The command is described below:
 
 ### Generate the configuration file
 
-Once the layers are correctly configured in Mapwize, with right floor and alignment, use the command below to generate the JSON configuration file that will be used later by the listener.
+Once the layers are correctly configured in Mapwize, with right floor and alignment, use the command below to generate the JSON configuration file that will be used later by the server.
 
 ```
 ./meraki-configurator/configureFromMapwize --merakiFloorPlansConfig [FILEPATH_FOR_FLOORPLANS_JSON] --mapwizeUser [YOUR_MAPWIZE_EMAIL] --mapwizePwd [YOUR_MAPWIZE_PWD] --mapwizeApiKey [YOUR_MAPWIZE_API_KEY] --mapwizeOrganizationId [YOUR_MAPWIZE_ORGANIZATIONID] --mapwizeVenueId [YOUR_MAPWIZE_VENUEID] --output [OUTPUT_PATH_FOR_LISTENER_CONFIGURATION]
@@ -139,46 +139,41 @@ This steps creates beacons in Mapwize based on the Meraki configuration. Please 
 ```
 
 
-## Listener server
+## Server
 
-This the NodeJS server receiving the Meraki Location notifications.
+This is the NodeJS server receiving the Meraki Location notifications and sending them to the app using web socket.
+
 Each notification will be received and processed into an IndoorLocation object.
-
-The computed IndoorLocation will be saved in a Redis database with the IP address as userId to be used by the emitter.
-
-Thanks to Redis, the emitter will be notified each time a key value has been changed.
-
-To do so, redis notifications have to be enabled with the command described below.
-```
-redis-cli config set notify-keyspace-events K$
-```
-
-The Microsoft Azure platform also allows to change this parameter in the "Advanced settings" menu item.
+The computed IndoorLocation will be saved in a cache (Redis or in-memory).
 
 ### Use
 
-*   We first need to correctly set the configuration parameters
-    *   Directly in the `config/all.js` file
-    *   Via environment variables
-        *   PORT: port used by the server (_default: 3004_)
-        *   SECRET: secret defined in the Meraki dashboard to authenticate the POST query (__required__)
-        *   VALIDATOR: token defined by Meraki to identify the source (__required__)
-        *   MAX_BODY_SIZE: Controls the maximum request body size (_default: '50mb'_)
-        *   FLOOR_PLANS: serialized JSON with the output of the configurator (__required__)
-        *   MAC_ADDRESS_ENABLED: use the MAC address in addition to the IP address as a key in Redis (_default: false_)
-        *   REDIS_HOST: redis host (__required__)
-        *   REDIS_PORT: redis port (_default: 6379_)
-        *   REDIS_AUTH: redis password (__required__ if set)
-        *   REDIS_MERAKI_NOTIF_TTL: redis key TTL in seconds (_default: 3600_)
-        *   DOCUMENT_DB_ENABLED: allow to log the indoorLocation along to the Meraki observation into a DocumentDB collection
-        *   DOCUMENT_DB_ENDPOINT: string connexion to the DocumentDB instance
-        *   DOCUMENT_DB_PRIMARY_KEY: primary access key to the DocumentDB instance 
-        *   DOCUMENT_DB_DATABASE: DocumentDB database name
-        *   DOCUMENT_DB_COLLECTION: DocumentDB collection name
-*   Start the server
-    ```
-    npm run start-listener
-    ```
+We first need to correctly set the configuration parameters directly in the `config/all.js` file or via environment variables
+
+    
+*   `PORT`: port used by the server (_default: 3004_)
+*   `SECRET`: secret defined in the Meraki dashboard to authenticate the POST query (__required__)
+*   `VALIDATOR`: token defined by Meraki to identify the source (__required__)
+*   `MAX_BODY_SIZE`: Controls the maximum request body size (_default: '50mb'_)
+*   `FLOOR_PLANS`: serialized JSON with the output of the configurator (__required__)
+*   `MAC_ADDRESS_ENABLED`: use the MAC address in addition to the IP address as a key in the cache (_default: true_)
+*   `REDIS_ENABLED`: using Redis if true (_default: false_)
+*   `REDIS_HOST`: redis host (_default: localhost_)
+*   `REDIS_PORT`: redis port (_default: 6379_)
+*   `REDIS_AUTH`: redis password (__required__ if set)
+*   `MERAKI_NOTIF_TTL`: how long a location is kept if no new location is sent for that device in seconds (_default: 3600_)
+*   `DOCUMENT_DB_ENABLED`: allow to log the indoorLocation along to the Meraki observation into a DocumentDB collection
+*   `DOCUMENT_DB_ENDPOINT`: string connexion to the DocumentDB instance
+*   `DOCUMENT_DB_PRIMARY_KEY`: primary access key to the DocumentDB instance 
+*   `DOCUMENT_DB_DATABASE`: DocumentDB database name
+*   `DOCUMENT_DB_COLLECTION`: DocumentDB collection name
+
+
+Start the server using 
+
+```
+npm run start-listener
+```
 
 #### Notes
 
@@ -192,27 +187,23 @@ If you want to put this variable into your clipboard instead, please execute the
 node -e 'var json = require("FILEPATH"); console.log(JSON.stringify(json));' | pbcopy
 ```
 
+### Production deployment with Redis
 
-## Emitter server
+The in-memory database is great for development and testing but is not suitable for production deployments because it does not persist data in case of server restart and it does not allow to scale the number of instances.
 
-This is the NodeJS server that will transmit the updated locations to the app using web socket.
-Each socket connection will lead to a redis subscription that will help to only get the IndoorLocation objects when the location of a user has been changed.
-These objects will be sent to the providers via a socket channel.
+To overcome those issues, we can use a Redis cache.
 
-### Use
+For the system to work, Redis notifications have to be enabled! It can be done using the following command:
 
-*   We first need to correctly set the configuration parameters
-    *   Directly in the `config/all.js` file
-    *   Via environment variables
-        *   PORT: port used by the server
-        *   REDIS_HOST: redis host (__required__)
-        *   REDIS_PORT: redis port
-        *   REDIS_AUTH: redis password (__required__ if set)
-*   Start the server
-    ```
-    npm run start-emitter
-    ```
-* Add the socketIndoorLocationProvider in your app and point the module to your emitter server URL.
+```
+redis-cli config set notify-keyspace-events K$
+```
+
+On some cloud platforms, like Microsoft Azure, the notifications can be enabled from the "Advanced settings" menu.
+
+When Redis is in place, it becomes possible to specialize some instances of the server to be only listening to location notifications. This is particularly useful when the load is mainly coming from the number of devices tracked.
+
+On the other hand, some instances of the server can be dedicated to the socket communication with the devices. This is particularly useful when the load comes form the the number of devices requesting their location.
 
 ### Packaging
 
