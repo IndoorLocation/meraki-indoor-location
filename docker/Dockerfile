@@ -1,4 +1,4 @@
-FROM node:6.13.1-alpine
+FROM node:6-alpine
 LABEL maintainer="Mapwize <support@mapwize.io>"
 
 ENV INSTALL_PACKAGES git build-base

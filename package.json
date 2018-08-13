@@ -1,28 +1,27 @@
 {
   "name": "meraki-indoor-location",
-  "version": "1.0.0",
-  "description": "Node.js server to provide indoorLocation from Cisco Meraki",
+  "version": "2.0.0",
+  "description": "Node.js server to provide IndoorLocation from Cisco Meraki",
   "engines": {
     "npm": "3.10.10",
-    "node": "6.12.2"
+    "node": "6.14.3"
   },
   "scripts": {
-    "start-listener": "node meraki-listener/app.js",
-    "start-emitter": "node meraki-emitter/app.js",
+    "start": "node meraki-server/app.js",
     "start-configurator-extract": "node meraki-configurator/extractFromMeraki.js",
     "start-configurator-upload": "node meraki-configurator/merakiFloorplansToMapwize.js",
     "start-configurator-configure": "node meraki-configurator/configureFromMapwize.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/IndoorLocation/meraki-socket-indoor-location-emitter.git"
+    "url": "git+https://github.com/IndoorLocation/meraki-indoor-location.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/IndoorLocation/meraki-socket-indoor-location-emitter/issues"
+    "url": "https://github.com/IndoorLocation/meraki-indoor-location/issues"
   },
-  "homepage": "https://github.com/IndoorLocation/meraki-socket-indoor-location-emitter#readme",
+  "homepage": "https://github.com/IndoorLocation/meraki-indoor-location#readme",
   "dependencies": {
     "async": "2.6.0",
     "body-parser": "1.18.2",
@@ -35,6 +34,7 @@
     "ioredis": "3.2.2",
     "lodash": "4.17.10",
     "mapwize-node-api": "https://github.com/Mapwize/mapwize-node-api",
+    "node-cache": "^4.2.0",
     "request": "2.85.0",
     "socket.io": "2.0.3",
     "sphericalmercator": "1.0.5",
