@@ -6,6 +6,7 @@ var net = require('net');
 
 var config = require('../config/config');
 var documentDB = require('../utils/documentdb');
+var mysql = require('../utils/mysql');
 var mapwize = require('../utils/mapwize');
 var cache = require('../cache');
 var utils = require('../utils');
@@ -30,7 +31,7 @@ exports.processMerakiNotifications = function (req, res) {
     // Check secret sent by Meraki (if set)
     if (!config.secret || config.secret === body.secret){
         var type = null;
-        
+
         if (body.type === 'DevicesSeen') {
             utils.log('' + req.body.data.observations.length + ' WiFi devices seen from AP ' + req.body.data.apMac);
             type = 'WiFi';
@@ -41,13 +42,14 @@ exports.processMerakiNotifications = function (req, res) {
         }
 
         _.each(req.body.data.observations, function (observation) {
-            var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
+            var globalObservation = _.merge({type: type, apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
             var ip = _.get(observation, 'ipv4') || 'null';
             ip = ip.match(ipExtractor)[1];
 
             //utils.log('Device detected. type:' + type + ' MAC: ' + observation.clientMac + ', IP: ' + (ip === 'null' ? 'Unknown' : ip + '.'));
 
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
+            globalObservation.indoorLocation = indoorLocation;
 
             if (!_.isEmpty(indoorLocation)) {
                 if (net.isIP(ip) === 4) {
@@ -68,6 +70,10 @@ exports.processMerakiNotifications = function (req, res) {
                     indoorLocation: indoorLocation,
                     merakiObservation: globalObservation
                 }));
+            }
+
+            if (config.mySQL.enabled.toString() === 'true') {
+                mysql.insertRecord(globalObservation);
             }
         });
 

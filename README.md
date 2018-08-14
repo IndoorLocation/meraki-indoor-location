@@ -205,6 +205,30 @@ When Redis is in place, it becomes possible to specialize some instances of the 
 
 On the other hand, some instances of the server can be dedicated to the socket communication with the devices. This is particularly useful when the load comes form the the number of devices requesting their location.
 
+### Storing data
+
+The data can be stored into an external databases for further analysis. MySQL and Azure documentDB are supported at this point.
+
+Please note that the volume of data can be quite large. Dimention your database and your retention period accordingly.
+
+#### Storing in MySQL
+
+To store the data in MySQL, create a table with the following fields:
+
+```
+CREATE TABLE location (clientMac VARCHAR(20), type VARCHAR(20), latitude DOUBLE, longitude DOUBLE, floor DECIMAL(5,2), accuracy DOUBLE, timestamp INTEGER, apMac VARCHAR(20), rssi INTEGER, ipv4 VARCHAR(20))
+```
+
+Then use the configuration variables to enable the connection:
+
+* `MYSQL_ENABLED`
+* `MYSQL_HOST`
+* `MYSQL_PORT`
+* `MYSQL_USER`
+* `MYSQL_PASSWORD`
+* `MYSQL_DATABASE`
+* `MYSQL_TABLE`
+
 ### Packaging
 
 A Docker image has been made available to ease the deployment.
