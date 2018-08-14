@@ -28,14 +28,24 @@ exports.processMerakiNotifications = function (req, res) {
     var body = req.body;
 
     // Check secret sent by Meraki (if set)
-    if ((!config.secret || config.secret === body.secret) && body.type === 'DevicesSeen') {
-        utils.log('' + req.body.data.observations.length + ' devices seen from AP ' + req.body.data.apMac);
+    if (!config.secret || config.secret === body.secret){
+        var type = null;
+        
+        if (body.type === 'DevicesSeen') {
+            utils.log('' + req.body.data.observations.length + ' WiFi devices seen from AP ' + req.body.data.apMac);
+            type = 'WiFi';
+        }
+        if (body.type === 'BluetoothDevicesSeen') {
+            utils.log('' + req.body.data.observations.length + ' Bluetooth devices seen from AP ' + req.body.data.apMac);
+            type = 'Bluetooth';
+        }
+
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
             var ip = _.get(observation, 'ipv4') || 'null';
             ip = ip.match(ipExtractor)[1];
 
-            // utils.log('Device detected. MAC: ' + observation.clientMac + ', IP: ' + (ip === 'null' ? 'Unknown' : ip + '.'));
+            //utils.log('Device detected. type:' + type + ' MAC: ' + observation.clientMac + ', IP: ' + (ip === 'null' ? 'Unknown' : ip + '.'));
 
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
 
