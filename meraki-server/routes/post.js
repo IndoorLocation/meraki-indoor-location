@@ -10,6 +10,7 @@ var mysql = require('../utils/mysql');
 var mapwize = require('../utils/mapwize');
 var cache = require('../cache');
 var utils = require('../utils');
+var area = require('../utils/area');
 
 var ipExtractor = /^\/?(.+)/;
 
@@ -43,14 +44,27 @@ exports.processMerakiNotifications = function (req, res) {
 
         _.each(req.body.data.observations, function (observation) {
             var globalObservation = _.merge({type: type, apMac: _.get(req.body.data, 'apMac'), apTags: _.get(req.body.data, 'apTags'), apFloors: _.get(req.body.data, 'apFloors')}, observation);
+
+            /*
+             IP address
+             */
             var ip = _.get(observation, 'ipv4') || 'null';
             ip = ip.match(ipExtractor)[1];
 
-            //utils.log('Device detected. type:' + type + ' MAC: ' + observation.clientMac + ', IP: ' + (ip === 'null' ? 'Unknown' : ip + '.'));
-
+            /*
+             Indoor location
+             */
             var indoorLocation = mapwize.getIndoorLocation(globalObservation);
             globalObservation.indoorLocation = indoorLocation;
 
+            /*
+             Area
+             */
+            globalObservation.area = area.getArea(indoorLocation);
+
+            /*
+             Store in cache
+             */
             if (!_.isEmpty(indoorLocation)) {
                 if (net.isIP(ip) === 4) {
                     cache.setObject(ip, indoorLocation, config.merakiNotificationTTL);
@@ -61,10 +75,9 @@ exports.processMerakiNotifications = function (req, res) {
                 }
             }
 
-            // Do whatever you want with the observations received here
-            // As an example, we log the indoorLocation along with the Meraki observation
-            // into a DocumentDB collection if enabled
-            // All object properties are flatten to ease any further analysis
+            /*
+             Store in Azure DocumentDB
+             */
             if (config.documentDB.enabled.toString() === 'true') {
                 documentDB.insertDocument(flatten({
                     indoorLocation: indoorLocation,
@@ -72,6 +85,9 @@ exports.processMerakiNotifications = function (req, res) {
                 }));
             }
 
+            /*
+             Store in MySQL
+             */
             if (config.mySQL.enabled.toString() === 'true') {
                 mysql.insertRecord(globalObservation);
             }

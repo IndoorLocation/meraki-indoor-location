@@ -187,6 +187,14 @@ If you want to put this variable into your clipboard instead, please execute the
 node -e 'var json = require("FILEPATH"); console.log(JSON.stringify(json));' | pbcopy
 ```
 
+### Areas
+
+If a list of areas is provided, the server can tag each device with the area it is in. A device is expected to be in only 1 area, and therefore areas should not overlap.
+
+The list of areas can be provided using the `AREA` environment variable as a GeoJSON FeatureCollection. Each feature needs to have a geometry of type polygon. Also, each feature should specify in it's properties its `name` (as string) and `floor` (as number).
+
+Such list of areas can easily be created using Mapwize Studio. Create places for your areas in your venue and then use the "Export places as geojson" function to download the GeoJson file. 
+
 ### Production deployment with Redis
 
 The in-memory database is great for development and testing but is not suitable for production deployments because it does not persist data in case of server restart and it does not allow to scale the number of instances.
@@ -216,7 +224,7 @@ Please note that the volume of data can be quite large. Dimention your database 
 To store the data in MySQL, create a table with the following fields:
 
 ```
-CREATE TABLE location (clientMac VARCHAR(20), type VARCHAR(20), latitude DOUBLE, longitude DOUBLE, floor DECIMAL(5,2), accuracy DOUBLE, timestamp INTEGER, apMac VARCHAR(20), rssi INTEGER, ipv4 VARCHAR(20))
+CREATE TABLE location (clientMac VARCHAR(20), type VARCHAR(20), latitude DOUBLE, longitude DOUBLE, floor DECIMAL(5,2), accuracy DOUBLE, timestamp INTEGER, apMac VARCHAR(20), rssi INTEGER, ipv4 VARCHAR(20), area VARCHAR(50))
 ```
 
 Then use the configuration variables to enable the connection:
