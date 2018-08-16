@@ -10,7 +10,7 @@ var mysqlPool = null;
 
 if (config.mySQL.enabled.toString() === 'true') {
     mysqlPool = mysql.createPool({
-        connectionLimit : 10,
+        connectionLimit : config.mySQL.poolConnectionLimit,
         host: config.mySQL.host,
         user: config.mySQL.user,
         password: config.mySQL.password,
