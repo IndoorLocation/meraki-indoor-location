@@ -30,7 +30,7 @@ function insertRecord(jsonObject) {
         values = _.map(values, function(value){
             if (typeof value == 'string') {
                 return '"'+ value + '"';
-            } else if (value == null || value == undefined || value == NaN) {
+            } else if (value == null || value == undefined || isNaN(value)) {
                 return 'NULL';
             } else {
                 return value
