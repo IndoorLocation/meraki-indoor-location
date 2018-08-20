@@ -33,11 +33,13 @@
     "image-size": "0.6.2",
     "ioredis": "3.2.2",
     "lodash": "4.17.10",
-    "mapwize-node-api": "https://github.com/Mapwize/mapwize-node-api",
+    "mapwize-node-api": "0.2.0",
+    "mysql": "^2.16.0",
     "node-cache": "^4.2.0",
     "request": "2.85.0",
     "socket.io": "2.0.3",
     "sphericalmercator": "1.0.5",
-    "utf8": "3.0.0"
+    "utf8": "3.0.0",
+    "xml2json": "^0.11.2"
   }
 }
