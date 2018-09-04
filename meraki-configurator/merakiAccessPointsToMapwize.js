@@ -52,12 +52,6 @@ function createLayerBeacons(layer, accessPoints, callback) {
             var scale = mapwize.getScale(accessPointCord, xyMerakiCorners);
             var projectAccessPoint = mapwize.projectWithScale(scale, xyMapwizeLayerCorner);
             
-            console.log('xyMerakiCorners', xyMerakiCorners);
-            console.log('xyMapwizeLayerCorner', xyMapwizeLayerCorner);
-            console.log('accessPointCord', accessPointCord);
-            console.log('scale', scale);
-            console.log('projectAccessPoint', projectAccessPoint);
-
             var beacon = {
                 'name' : "Meraki - " + accessPoint.name,
                 'owner' : program.mapwizeOrganizationId,
