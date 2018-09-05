@@ -237,6 +237,12 @@ Then use the configuration variables to enable the connection:
 * `MYSQL_DATABASE`
 * `MYSQL_TABLE`
 
+### Assets
+
+The assets feature lets you query a list of pre-defined assets with their location using the `/assets` route.
+
+Define an array of objects in the `ASSETS` environment variable. The entire array will be returned when doing a GET on `/assets`. Each asset should be defined as an object that contains its MAC address in the `id` property. 
+
 ### Packaging
 
 A Docker image has been made available to ease the deployment.
