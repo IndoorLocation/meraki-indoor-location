@@ -10,6 +10,7 @@ module.exports = {
     macAddressEnabled: process.env.MAC_ADDRESS_ENABLED || true,
     merakiNotificationTTL: process.env.MERAKI_NOTIF_TTL || 3600,
     areas: process.env.AREAS ? JSON.parse(process.env.AREAS) : null,
+    assets: process.env.ASSETS ? JSON.parse(process.env.ASSETS) : [{"id":"40:b8:9a:a5:87:77"},{"id":"00:00:00:00:00:00"}],
     redis: {
         enabled: process.env.REDIS_ENABLED || !!process.env.REDIS_HOST || false,
         host: process.env.REDIS_HOST || 'localhost',
