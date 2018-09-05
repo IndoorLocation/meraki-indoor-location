@@ -10,6 +10,7 @@ var socket = require('../routes/socket');
 var defaultRoutes = require('../routes');
 var postRoutes = require('../routes/post');
 var assetsRoutes = require('../routes/assets');
+var usersRoutes = require('../routes/users');
 
 module.exports = function () {
     var app = require('express')();
@@ -55,6 +56,8 @@ module.exports = function () {
     app.get('/post', postRoutes.validator);
     app.post('/post', postRoutes.processMerakiNotifications);
     app.get('/assets', assetsRoutes.assets);
+    app.get('/users', usersRoutes.list);
+    app.get('/users/:userId', usersRoutes.user);
     app.all('*', defaultRoutes.default);
 
     // Start server
