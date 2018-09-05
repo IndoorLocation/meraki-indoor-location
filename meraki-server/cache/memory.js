@@ -25,9 +25,7 @@ exports.subscribe = function(key) {
     var subscriber = new EventEmitter();
 
     var listener =  function (_key, _value) {
-        console.log('listener', _key, _value);
         if (key == _key) {
-            console.log('send', _key);
             subscriber.emit('update', _value ? JSON.parse(_value) : null);
         }
     };
@@ -35,7 +33,6 @@ exports.subscribe = function(key) {
     cache.on('set', listener);
 
     subscriber.quit = function(){
-        console.log('quit');
         cache.removeListener('set', listener);
     };
 

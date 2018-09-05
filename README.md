@@ -126,7 +126,7 @@ The command is described below:
 Once the layers are correctly configured in Mapwize, with right floor and alignment, use the command below to generate the JSON configuration file that will be used later by the server.
 
 ```
-./meraki-configurator/configureFromMapwize --merakiFloorPlansConfig [FILEPATH_FOR_FLOORPLANS_JSON] --mapwizeUser [YOUR_MAPWIZE_EMAIL] --mapwizePwd [YOUR_MAPWIZE_PWD] --mapwizeApiKey [YOUR_MAPWIZE_API_KEY] --mapwizeOrganizationId [YOUR_MAPWIZE_ORGANIZATIONID] --mapwizeVenueId [YOUR_MAPWIZE_VENUEID] --output [OUTPUT_PATH_FOR_LISTENER_CONFIGURATION]
+./meraki-configurator/configureFromMapwize.js --merakiFloorPlansConfig [FILEPATH_FOR_FLOORPLANS_JSON] --mapwizeUser [YOUR_MAPWIZE_EMAIL] --mapwizePwd [YOUR_MAPWIZE_PWD] --mapwizeApiKey [YOUR_MAPWIZE_API_KEY] --mapwizeOrganizationId [YOUR_MAPWIZE_ORGANIZATIONID] --mapwizeVenueId [YOUR_MAPWIZE_VENUEID] --output [OUTPUT_PATH_FOR_LISTENER_CONFIGURATION]
 ```
 
 
@@ -135,7 +135,7 @@ Once the layers are correctly configured in Mapwize, with right floor and alignm
 This steps creates beacons in Mapwize based on the Meraki configuration. Please note that the beacons will be added in Mapwize based on the floor plan configuration done in Mapwize, with the floor and alignment given to the floor plans.
 
 ```
-./meraki-configurator/merakiAccessPointsToMapwize --merakiFloorPlansConfig [FILEPATH_FOR_FLOORPLANS_JSON] --merakiAccessPointsConfig [FILEPATH_FOR_ACCESSPOINTS_XML] --mapwizeUser [YOUR_MAPWIZE_EMAIL] --mapwizePwd [YOUR_MAPWIZE_PWD] --mapwizeApiKey [YOUR_MAPWIZE_API_KEY] --mapwizeOrganizationId [YOUR_MAPWIZE_ORGANIZATIONID] --mapwizeVenueId [YOUR_MAPWIZE_VENUEID]
+./meraki-configurator/merakiAccessPointsToMapwize.js --merakiFloorPlansConfig [FILEPATH_FOR_FLOORPLANS_JSON] --merakiAccessPointsConfig [FILEPATH_FOR_ACCESSPOINTS_XML] --mapwizeUser [YOUR_MAPWIZE_EMAIL] --mapwizePwd [YOUR_MAPWIZE_PWD] --mapwizeApiKey [YOUR_MAPWIZE_API_KEY] --mapwizeOrganizationId [YOUR_MAPWIZE_ORGANIZATIONID] --mapwizeVenueId [YOUR_MAPWIZE_VENUEID]
 ```
 
 
@@ -187,6 +187,14 @@ If you want to put this variable into your clipboard instead, please execute the
 node -e 'var json = require("FILEPATH"); console.log(JSON.stringify(json));' | pbcopy
 ```
 
+### Areas
+
+If a list of areas is provided, the server can tag each device with the area it is in. A device is expected to be in only 1 area, and therefore areas should not overlap.
+
+The list of areas can be provided using the `AREA` environment variable as a GeoJSON FeatureCollection. Each feature needs to have a geometry of type polygon. Also, each feature should specify in it's properties its `name` (as string) and `floor` (as number).
+
+Such list of areas can easily be created using Mapwize Studio. Create places for your areas in your venue and then use the "Export places as geojson" function to download the GeoJson file. 
+
 ### Production deployment with Redis
 
 The in-memory database is great for development and testing but is not suitable for production deployments because it does not persist data in case of server restart and it does not allow to scale the number of instances.
@@ -204,6 +212,30 @@ On some cloud platforms, like Microsoft Azure, the notifications can be enabled 
 When Redis is in place, it becomes possible to specialize some instances of the server to be only listening to location notifications. This is particularly useful when the load is mainly coming from the number of devices tracked.
 
 On the other hand, some instances of the server can be dedicated to the socket communication with the devices. This is particularly useful when the load comes form the the number of devices requesting their location.
+
+### Storing data
+
+The data can be stored into an external databases for further analysis. MySQL and Azure documentDB are supported at this point.
+
+Please note that the volume of data can be quite large. Dimention your database and your retention period accordingly.
+
+#### Storing in MySQL
+
+To store the data in MySQL, create a table with the following fields:
+
+```
+CREATE TABLE location (clientMac VARCHAR(20), type VARCHAR(20), latitude DOUBLE, longitude DOUBLE, floor DECIMAL(5,2), accuracy DOUBLE, timestamp INTEGER, apMac VARCHAR(20), rssi INTEGER, ipv4 VARCHAR(20), area VARCHAR(50))
+```
+
+Then use the configuration variables to enable the connection:
+
+* `MYSQL_ENABLED`
+* `MYSQL_HOST`
+* `MYSQL_PORT`
+* `MYSQL_USER`
+* `MYSQL_PASSWORD`
+* `MYSQL_DATABASE`
+* `MYSQL_TABLE`
 
 ### Packaging
 

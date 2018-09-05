@@ -3,11 +3,8 @@
 var program = require('commander');
 var fs = require('fs');
 var _ = require('lodash');
-var request = require('request');
 var async = require('async');
 var chalk = require('chalk');
-var imageSize = require('image-size');
-var coordinate = require('./coordinate');
 var MapwizeAPI = require('mapwize-node-api');
 
 program

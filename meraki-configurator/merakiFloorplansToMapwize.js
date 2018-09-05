@@ -5,10 +5,10 @@ var async = require('async');
 var fs = require('fs');
 var MapwizeAPI = require('mapwize-node-api');
 var chalk = require('chalk');
-var coordinate = require('./coordinate');
 var request = require('request');
 var imageSize = require('image-size');
 var program = require('commander');
+var mapwize = require('../meraki-server/utils/mapwize');
 
 program
     .version('0.1.0')
@@ -75,10 +75,10 @@ function createLayer(floorplan, name, callback) {
                     }
                 ]
             }
-            var TLProject = coordinate.projectPointForGeoreference([0, size.height], georeference);
-            var TRProject = coordinate.projectPointForGeoreference([size.width, size.height], georeference);
-            var BLProject = coordinate.projectPointForGeoreference([0, 0], georeference);
-            var BRProject = coordinate.projectPointForGeoreference([size.width, 0], georeference);
+            var TLProject = mapwize.projectPointForGeoreference([0, size.height], georeference);
+            var TRProject = mapwize.projectPointForGeoreference([size.width, size.height], georeference);
+            var BLProject = mapwize.projectPointForGeoreference([0, 0], georeference);
+            var BRProject = mapwize.projectPointForGeoreference([size.width, 0], georeference);
             var topLeft = {latitude: TLProject[0], longitude: TLProject[1]};
             var topRight = {latitude: TRProject[0], longitude: TRProject[1]};
             var bottomLeft = {latitude: BLProject[0], longitude: BLProject[1]};

@@ -7,7 +7,8 @@ var MapwizeAPI = require('mapwize-node-api');
 var chalk = require('chalk');
 var program = require('commander');
 var xml = require('xml2json');
-var coordinate = require('./coordinate');
+var mapwize = require('../meraki-server/utils/mapwize');
+
 program
     .version('0.1.0')
     .description('Upload Meraki access points into Mapwize')
@@ -45,14 +46,14 @@ function createLayerBeacons(layer, accessPoints, callback) {
     async.each(accessPoints, function (nodeIds, cb) {
         var accessPoint = accessPointsByNodeIds[nodeIds];
         if (accessPoint) {
-            var xyMerakiCorners = coordinate.lngLatCornersToXYCorners(layer.data.cornersInMeraki);
-            var xyMapwizeLayerCorner = coordinate.lngLatCornersToXYCorners(layer.importJob.corners);
+            var xyMerakiCorners = mapwize.getXYCorners(layer.data.cornersInMeraki);
+            var xyMapwizeLayerCorner = mapwize.getXYCorners(layer.importJob.corners);
             var accessPointCord = {lng : parseFloat(accessPoint.lng), lat : parseFloat(accessPoint.lat)};
-            var scale = coordinate.getScale(accessPointCord, xyMerakiCorners);
-            var projectAccessPoint = coordinate.projectWithScale(scale, xyMapwizeLayerCorner);
-            //console.log(scale)
+            var scale = mapwize.getScale(accessPointCord, xyMerakiCorners);
+            var projectAccessPoint = mapwize.projectWithScale(scale, xyMapwizeLayerCorner);
+            
             var beacon = {
-                'name' : "AP - " + accessPoint.name,
+                'name' : "Meraki - " + accessPoint.name,
                 'owner' : program.mapwizeOrganizationId,
                 'venueId' : program.mapwizeVenueId,
                 'type' : 'wifi',
@@ -139,7 +140,7 @@ async.series([
     function (next) {
         console.log(chalk.blue("- Sync mapwize beacons"));
         var filter = function (beacon) {
-            return _.startsWith(beacon.name, "AP - ");
+            return _.startsWith(beacon.name, "Meraki - ");
         }
         MapwizeClient.syncVenueBeacons(program.mapwizeVenueId, mapwizeFormatOfMerakiAccessPoint, {filter : filter, delete : true}, next);
     }
