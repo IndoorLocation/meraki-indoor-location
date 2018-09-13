@@ -77,6 +77,8 @@ exports.processMerakiNotifications = function (req, res) {
                 console.log('Could not get IndoorLocation for : ' + JSON.stringify(globalObservation));
             }
 
+            console.log(JSON.stringify(globalObservation));
+
             /*
              Store in Azure DocumentDB
              */
