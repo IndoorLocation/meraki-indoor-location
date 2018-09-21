@@ -1,7 +1,7 @@
-FROM node:6-alpine
+FROM node:6.14.4-alpine
 LABEL maintainer="Mapwize <support@mapwize.io>"
 
-ENV INSTALL_PACKAGES git build-base
+ENV INSTALL_PACKAGES git build-base python
 
 COPY . /root/meraki-indoor-location/
 
