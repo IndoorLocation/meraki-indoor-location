@@ -73,6 +73,8 @@ exports.processMerakiNotifications = function (req, res) {
                 if (config.macAddressEnabled.toString() === 'true' && observation.clientMac) {
                     cache.setObject(observation.clientMac, indoorLocation, config.merakiNotificationTTL);
                 }
+            } else {
+                console.log('Could not get IndoorLocation for : ' + JSON.stringify(globalObservation));
             }
 
             /*

@@ -34,6 +34,11 @@ function getObject(key, callback) {
 };
 exports.getObject = getObject;
 
+function getKeys(callback) {
+    client.keys('*', callback);
+};
+exports.getKeys = getKeys;
+
 exports.subscribe = function(key) {
     var subscriber = new EventEmitter();
 
